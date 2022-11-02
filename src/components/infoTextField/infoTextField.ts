@@ -1,4 +1,4 @@
-import { Component } from "../component";
+import { Component } from "../Block";
 import tpl from "./infoTextField.hbs";
 import "./infoTextField.scss";
 

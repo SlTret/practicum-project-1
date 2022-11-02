@@ -1,4 +1,4 @@
-import { Component } from "../component";
+import { Component } from "../Block";
 import tpl from "./chatItem.hbs";
 import "./chatItem.scss";
 

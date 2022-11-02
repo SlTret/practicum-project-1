@@ -1,6 +1,6 @@
 import { patterns } from '../../utils/patterns';
 import { Button } from '../../components/button/button';
-import { Component } from '../../components/component';
+import { Component } from '../../components/Block';
 import { TextInput } from '../../components/textInput/textInput';
 import tpl from './loginPage.hbs';
 import './loginPage.scss';

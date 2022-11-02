@@ -1,4 +1,4 @@
-import { Component } from "../component";
+import { Component } from "../Block";
 import tpl from "./button.hbs";
 import "./button.scss";
 

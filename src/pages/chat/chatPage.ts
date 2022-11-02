@@ -1,6 +1,6 @@
 import { ProfileButton } from '../../components/profileButton/profileButton';
 import { Pages, PagesEvents, Service } from '../../services/Service';
-import { Component } from '../../components/component';
+import { Component } from '../../components/Block';
 import { ChatItem } from '../../components/chatItem/chatItem';
 import tpl from './chatPage.hbs';
 import './chatPage.scss';

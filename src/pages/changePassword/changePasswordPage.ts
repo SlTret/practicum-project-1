@@ -1,6 +1,6 @@
 import { patterns } from '../../utils/patterns';
 import { Button } from '../../components/button/button';
-import { Component } from '../../components/component';
+import { Component } from '../../components/Block';
 import { EditTextField } from '../../components/editTextField/editTextField';
 import { Pages, PagesEvents, Service } from '../../services/Service';
 import tpl from './changePasswordPage.hbs';

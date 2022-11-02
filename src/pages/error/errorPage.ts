@@ -1,6 +1,6 @@
 import { Pages, PagesEvents, Service } from '../../services/Service';
 import { Button } from '../../components/button/button';
-import { Component } from '../../components/component';
+import { Component } from '../../components/Block';
 import tpl from './errorPage.hbs';
 import './errorPage.scss';
 

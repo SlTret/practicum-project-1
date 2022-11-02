@@ -1,6 +1,6 @@
 import { Pages, PagesEvents, Service } from '../../services/Service';
 import { Button } from '../../components/button/button';
-import { Component } from '../../components/component';
+import { Component } from '../../components/Block';
 import { InfoTextField } from '../../components/infoTextField/infoTextField';
 import tpl from './profilePage.hbs';
 import './profilePage.scss';
