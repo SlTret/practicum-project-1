@@ -4,9 +4,8 @@ import { Component, Props } from '../../components/Block';
 import { TextInput } from '../../components/textInput/textInput';
 import tpl from './loginPage.hbs';
 import './loginPage.scss';
-import store, { Indexed, StoreEvents } from '../../store/store';
 import { extendComponent } from '../../store/extendComponent';
-import loginController from '../../controllers/LoginController';
+import loginController from '../../controllers/loginController';
 import Router from '../../router/router';
 
 const router = new Router(".root");
