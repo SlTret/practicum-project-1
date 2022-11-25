@@ -1,10 +1,15 @@
 import { EventBus } from './EventBus';
 import { v4 as uuidv4 } from 'uuid';
 
-interface MetaType  {
-    tagName:string;
-    props:object
+export interface MetaType {
+    tagName: string;
+    props: object
 }
+
+export type IComponent = typeof Component
+
+export type Props = { [key: string]: any }
+type TemplateFunction = (props: Props) => string
 
 export class Component extends EventBus {
     static EVENTS = {
@@ -14,17 +19,19 @@ export class Component extends EventBus {
         FLOW_CDU: "flow:component-did-update",
     };
 
-    _element: HTMLElement;
-    _id : string; 
+    _element?: HTMLElement;
+    _id: string;
+    _display = "";
     _meta: MetaType;
-    props: {[key:string] : object | string }
-    children: {[key:string] : Component}
-    
-    constructor(tagName = "div", propsAndChildren = {}) {
+    props: { [key: string]: any }
+    children: { [key: string]: Component }
+
+    constructor(propsAndChildren = {}) {
 
         super();
 
         const { children, props } = this._getChildren(propsAndChildren);
+        const tagName: string = props.tagName as string;
 
         this.children = children;
 
@@ -34,9 +41,9 @@ export class Component extends EventBus {
         };
 
         this._id = uuidv4();
-        this.props = this._makePropsProxy({...props, id: this._id});
+        this.props = this._makePropsProxy({ ...props, id: this._id });
         this.dispatchComponentDidMount = this.dispatchComponentDidMount.bind(this);
-        this._registerEvents() ;
+        this._registerEvents();
         this.emit(Component.EVENTS.INIT);
     }
 
@@ -47,20 +54,20 @@ export class Component extends EventBus {
         this.on(Component.EVENTS.FLOW_CDU, this._render.bind(this));
     }
 
-    compile(template :Function, props = {}) : DocumentFragment {
-        const propsAndStubs : {[key:string] : string}  = { ...props };
+    compile(template: TemplateFunction, props = {}): DocumentFragment {
+        const propsAndStubs: { [key: string]: string } = { ...props };
 
         Object.entries(this.children).forEach(([key, child]) => {
             propsAndStubs[key] = `<div data-id="${child._id}"></div>`
         });
-     
+
         const fragment = this._createDocumentElement('template') as HTMLTemplateElement;
 
         fragment.innerHTML = template(propsAndStubs);
-        
+
         Object.values(this.children).forEach(child => {
             const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
-            if(stub) {
+            if (stub) {
                 stub.replaceWith(child.getContent());
             }
         });
@@ -69,13 +76,18 @@ export class Component extends EventBus {
     }
 
     _addArrtibutes() {
-        const {attr = {}} = {...this.props};
-        Object.entries(attr).forEach(([key, value])=> {
-            this._element.setAttribute(key, value as string);
+        const { attr = {} } = { ...this.props };
+        Object.entries(attr).forEach(([key, value]) => {
+            if (this._element)
+                this._element.setAttribute(key, value as string);
         });
     }
 
     _render() {
+
+        if (!this._element)
+            throw new Error("No component element");
+
         const fragment = this.render();
         // this._removeEvents();
         this._element.innerHTML = '';
@@ -84,13 +96,13 @@ export class Component extends EventBus {
     }
 
     // Может переопределять пользователь, необязательно трогать
-    render() : DocumentFragment {
+    render(): DocumentFragment {
         return new DocumentFragment();
     }
 
-    _getChildren(propsAndChildren : object) {
-        const children : {[key:string] : Component} = {};
-        const props: {[key:string] : object | string} = {};
+    _getChildren(propsAndChildren: object) {
+        const children: { [key: string]: Component } = {};
+        const props: { [key: string]: object | string } = {};
 
         Object.entries(propsAndChildren).forEach(([key, value]) => {
             if (value instanceof Component) {
@@ -104,21 +116,21 @@ export class Component extends EventBus {
     }
 
     _addEvents() {
-        const {events = {}} = this.props;
+        const { events = {} } = this.props;
         (Object.keys(events) as Array<keyof typeof events>).forEach(eventName => {
-           this._element.addEventListener(eventName, events[eventName]);
+            this._element.addEventListener(eventName, events[eventName]);
         });
     }
 
     _removeEvents() {
-        const {events = {}} = this.props;
+        const { events = {} } = this.props;
         (Object.keys(events) as Array<keyof typeof events>).forEach(eventName => {
-           this._element.removeEventListener(eventName, events[eventName]);
+            this._element.removeEventListener(eventName, events[eventName]);
         });
     }
 
     _createResources() {
-        const { tagName  } = this._meta;
+        const { tagName } = this._meta;
         this._element = this._createDocumentElement(tagName);
         this._element.setAttribute('data-id', this._id);
         this._addArrtibutes();
@@ -138,23 +150,23 @@ export class Component extends EventBus {
         });
     }
 
-    componentDidMount(oldProps : object | null) {oldProps}
+    componentDidMount(oldProps: object | null) { oldProps }
 
     dispatchComponentDidMount() {
         this.emit(Component.EVENTS.FLOW_CDM);
     }
 
-    _componentDidUpdate(oldProps : object, newProps: object) {
+    _componentDidUpdate(oldProps: object, newProps: object) {
         const response: boolean = this.componentDidUpdate(oldProps, newProps);
     }
 
     // Может переопределять пользователь, необязательно трогать
-    componentDidUpdate(oldProps : object, newProps: object) {
+    componentDidUpdate(oldProps: object, newProps: object) {
         this.emit(Component.EVENTS.FLOW_CDU);
         return true;
     }
 
-    setProps = (nextProps : object)  => {
+    setProps = (nextProps: object) => {
         if (!nextProps) {
             return;
         }
@@ -162,7 +174,7 @@ export class Component extends EventBus {
         Object.assign(this.props, nextProps);
     };
 
-    get element() : HTMLElement {
+    get element(): HTMLElement {
         return this._element;
     }
 
@@ -170,17 +182,17 @@ export class Component extends EventBus {
         return this.element;
     }
 
-    _makePropsProxy(props :  {[key:string] : object | string}) : {[key:string] : object | string} {
+    _makePropsProxy(props: { [key: string]: object | string }): { [key: string]: object | string } {
         const self = this;
 
         props = new Proxy(props, {
-            get(target: {[key:string] : object} , prop : string) {
+            get(target: { [key: string]: object }, prop: string) {
                 const value = target[prop];
                 return typeof value === "function" ? value.bind(target) : value;
             },
-            set(target: {[key:string] : object} , prop : string, value) {
+            set(target: { [key: string]: object }, prop: string, value) {
                 if (target[prop] != value) {
-                    let oldValue = target[prop];
+                    const oldValue = target[prop];
                     target[prop] = value;
                     self.componentDidUpdate(oldValue, value)
                 }
@@ -200,10 +212,11 @@ export class Component extends EventBus {
     }
 
     show() {
-        this.getContent().style.display = "block";
+        this.getContent().style.display =  this._display;
     }
 
     hide() {
+        this._display = this.getContent().style.display;
         this.getContent().style.display = "none";
     }
 }
