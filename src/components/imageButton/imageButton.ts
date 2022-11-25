@@ -1,6 +1,6 @@
 import { Component } from "../Block";
-import tpl from "./ImageButton.hbs";
-import "./ImageButton.scss";
+import tpl from "./imageButton.hbs";
+import "./imageButton.scss";
 
 export class ImageButton extends Component {
     constructor(props : {[key: string] : object | string } = {}) {
