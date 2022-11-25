@@ -1,7 +1,6 @@
 import { UsersAPI } from "../api/users-api";
-import Router from "../router/router";
 import store from "../store/store";
-import loginController from "./LoginController";
+import loginController from "./loginController";
 
 const users = new UsersAPI();
 

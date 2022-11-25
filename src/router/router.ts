@@ -1,5 +1,5 @@
 import { IComponent } from "../components/Block";
-import loginController from "../controllers/LoginController";
+import loginController from "../controllers/loginController";
 import Route from "./route";
 
 class Router {

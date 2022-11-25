@@ -5,7 +5,7 @@ import tpl from './chatPage.hbs';
 import './chatPage.scss';
 import Router from '../../router/router';
 import { ImageButton } from '../../components/imageButton/imageButton';
-import loginController from '../../controllers/LoginController';
+import loginController from '../../controllers/loginController';
 import { extendComponent } from '../../store/extendComponent';
 import { ModalWindow, WindowTypes } from '../../components/modalWindow/modalWindow';
 import chatsController from '../../controllers/chatsController';
